@@ -1,216 +1,125 @@
-var sunglassesOptions = {
-    models: [
-        {
-            name: "aviator",
-            price: 300,
-            thumbImg: "thumb-aviator.png",
-            cssClass: "frame-aviator",
-        },
-        {      
-            name: "half-frame",
-            price: 200,
-            thumbImg: "thumb-half-frame.png",
-            cssClass: "frame-half",
-        },
-        {
-            name: "round",  
-            price: 250,
-            thumbImg: "thumb-round.png",
-            cssClass: "frame-round",
-        },
-        {  
-            name: "wayfarer",
-            price: 250,
-            thumbImg: "thumb-wayfarer.png",
-            cssClass: "frame-wayfarer",
-        }],
-    lenses: [
-        {
-            color: "sepia",
-            price: 20,
-            cssClass: "color-sepia",
-        },
-        {
-            color: "rainbow",
-            price: 50,
-            cssClass: "color-rainbow",
-        },
-        {
-            color: "iridescent",
-            price: 30,
-            cssClass: "color-iridescent",
-        }],
-    frames: [
-        {
-            color: "charcoal",
-            price: 0,
-            cssClass: "color-charcoal",
-        },
-        {
-            color: "tan",
-            price: 0,
-            cssClass: "color-tan",
-        },
-        {
-            color: "rose",
-            price: 0,
-            cssClass: "color-rose",
-        },
-    ],
+import { sunglassesOptions, defaultSunglasses } from "./sunglassesOptions";
+
+const productDetailsEl = document.getElementById("productDetails");
+const productImage = document.getElementById("productImage");
+const productFrames = document.getElementsByClassName("product-image_frame")[0];
+const productLenses = document.getElementsByClassName(
+    "product-image_lenses"
+)[0];
+
+let sunglassesNew = "";
+
+function setSunglasses(sunglassesNew = defaultSunglasses) {
+    return sunglassesNew;
 }
 
-var sunglasses = {
-    model: {
-        name: "aviator",
-        price: 300,
-        thumbImg: "./images/thumb-aviator.png",
-        cssClass: "frame-aviator",
-    },
-    lenses: {
-        color: "sepia",
-        price: 20,
-        cssClass: "color-sepia",
-    },
-    frame: {
-        color: "charcoal",
-        price: 0,
-        cssClass: "color-charcoal",
-    }     
-}
+function render(sunglasses) {
+    const {
+        model: { name, price: modelPrice, cssClass: modelCSS },
+        lenses: { color: lenseColor, price: lensePrice, cssClass: lensesCSS },
+        frame: { color: frameColor, price: framePrice, cssClass: frameCSS },
+    } = sunglasses;
 
+    const priceDisplay = "$" + (modelPrice + lensePrice + framePrice);
 
+    productDetailsEl.innerHTML = `
+        <h1>${name}</h1>
+        <p>Custom: ${lenseColor} lenses, ${frameColor} frame</p>
+        <p>${priceDisplay}</p>
+    `;
 
-var productDetailsEl = document.getElementById("productDetails")
-var productImage = document.getElementById("productImage")
-var productFrames = document.getElementsByClassName("product-image_frame")[0]
-var productLenses = document.getElementsByClassName("product-image_lenses")[0]
+    const [, currClass] = productImage.classList;
+    productImage.classList.replace(currClass, modelCSS);
 
-var sunglassesNew = ''
+    const [, currFramesClass] = productFrames.classList;
+    productFrames.classList.replace(currFramesClass, frameCSS);
 
-function setSunglasses(sunglassesNew = sunglasses) {
-    return sunglassesNew
-}
-
-function render(sunglassesNew) {
-    
-    var sunglassesNew = {
-        model: {
-            name: sunglassesNew.model.name,
-            price: sunglassesNew.model.price,
-            thumbImg: sunglassesNew.model.thumbImg,
-            cssClass: sunglassesNew.model.cssClass,
-        },
-        lenses: {
-            color: sunglassesNew.lenses.color,
-            price: sunglassesNew.lenses.price,
-            cssClass: sunglassesNew.lenses.cssClass,
-        },
-        frame: {
-            color: sunglassesNew.frame.color,
-            price: sunglassesNew.frame.price,
-            cssClass: sunglassesNew.frame.cssClass,
-        }     
-    }
-    var price = "$" + (sunglassesNew.model.price + sunglassesNew.lenses.price + sunglassesNew.frame.price)
-    
-  
-    productDetailsEl.innerHTML = 
-    "<h1>" + sunglassesNew.model.name + "</h1>" +
-    "<p>Custom: "  + sunglassesNew.lenses.color + " lenses, " + sunglassesNew.frame.color + " frames</p>" +
-    "<p>" + price + "</p>"
-    
-    var currClass = productImage.classList[1]
-    productImage.classList.replace(currClass, sunglassesNew.model.cssClass)
-    
-    var currFramesClass = productFrames.classList[1]
-    productFrames.classList.replace(currFramesClass, sunglassesNew.frame.cssClass)
-    
-    var currLensesClass = productLenses.classList[1]
-    productLenses.classList.replace(currLensesClass, sunglassesNew.lenses.cssClass)
-    
+    const [, currLensesClass] = productLenses.classList;
+    productLenses.classList.replace(currLensesClass, lensesCSS);
 }
 
 //Highlight current selection
 function addHighlight(clickedItem) {
     if (clickedItem.classList.contains("product-thumb")) {
-        Array.from(document.getElementsByClassName("product-thumb"))
-            .forEach(function(thumb) {
-               thumb.classList.remove("selected") 
-            }) 
+        Array.from(document.getElementsByClassName("product-thumb")).forEach(
+            (thumb) => {
+                thumb.classList.remove("selected");
+            }
+        );
     } else if (clickedItem.classList.contains("product-color-swatch")) {
-        var siblings = clickedItem.closest("ul").querySelectorAll("button")
-        Array.from(siblings)
-            .forEach(function(swatch) {
-               swatch.classList.remove("selected") 
-            })
+        const siblings = clickedItem.closest("ul").querySelectorAll("button");
+        Array.from(siblings).forEach((swatch) => {
+            swatch.classList.remove("selected");
+        });
     }
-    clickedItem.classList.add("selected") 
+    clickedItem.classList.add("selected");
 }
 
+document.body.addEventListener("click", (event) => {
+    const clickedItem = event.target;
 
-document.body.addEventListener("click", function(event) {
-    var clickedItem = event.target
-    //if sunglassesNew defined take variable from updates 
-        //else use original sunglasses object
-    if (!sunglassesNew) {
-        sunglassesNew = sunglasses
-    }
-    
-    // update model
+    sunglassesNew = !sunglassesNew ? defaultSunglasses : sunglassesNew;
+
     if (clickedItem.classList.contains("product-thumb")) {
+        const {
+            dataset: { name: currName },
+        } = clickedItem;
 
-        var currName = clickedItem.dataset.name
+        const modelOptions = sunglassesOptions.models.filter(({ name }) => {
+            return name === currName;
+        })[0];
 
-        var modelOptions = sunglassesOptions.models
-        .filter(function(item) {
-            return item.name === currName
-        })[0]
-        
-        var name = modelOptions.name
-        var price = modelOptions.price
-        var thumbImg = modelOptions.thumbImg
-        var cssClass = modelOptions.cssClass
-        
+        const { name, price, thumbImg, cssClass } = modelOptions;
+        const {
+            lenses: {
+                color: lenseColor,
+                price: lensePrice,
+                cssClass: lenseCSS,
+            },
+            frame: { color: frameColor, price: framePrice, cssClass: frameCSS },
+        } = sunglassesNew;
+
         sunglassesNew = {
             model: {
-                name: name,
-                price: price,
-                thumbImg: sunglassesNew.model.thumbImg,
-                cssClass: cssClass,
+                name,
+                price,
+                thumbImg,
+                cssClass,
             },
             lenses: {
-                color: sunglassesNew.lenses.color,
-                price: sunglassesNew.lenses.price,
-                cssClass: sunglassesNew.lenses.cssClass,
+                color: lenseColor,
+                price: lensePrice,
+                cssClass: lenseCSS,
             },
             frame: {
-                color: sunglassesNew.frame.color,
-                price: sunglassesNew.frame.price,
-                cssClass: sunglassesNew.frame.cssClass,
-            }     
-        }
-       
-        addHighlight(clickedItem)
-        setSunglasses(sunglassesNew)
-        render(sunglassesNew)
+                color: frameColor,
+                price: framePrice,
+                cssClass: frameCSS,
+            },
+        };
+
+        addHighlight(clickedItem);
+        setSunglasses(sunglassesNew);
+        render(sunglassesNew);
     }
-    
+
     // update colors for frames / lenses
     if (clickedItem.classList.contains("product-color-swatch")) {
-        var currColor = clickedItem.dataset.color
-        
+        const {
+            dataset: { color: currColor },
+        } = clickedItem;
+
         // check nearest parent div
-            //lenses
+        //lenses
         if (clickedItem.closest("div").classList[0] === "product-lenses") {
-            var colorOptions = sunglassesOptions.lenses
-            .filter(function(item) {
-                return item.color === currColor
-            })[0]
-            
-            var color = colorOptions.color
-            var price = colorOptions.price
-            var cssClass = colorOptions.cssClass
-        
+            var colorOptions = sunglassesOptions.lenses.filter(function (item) {
+                return item.color === currColor;
+            })[0];
+
+            var color = colorOptions.color;
+            var price = colorOptions.price;
+            var cssClass = colorOptions.cssClass;
+
             sunglassesNew = {
                 model: {
                     name: sunglassesNew.model.name,
@@ -227,21 +136,20 @@ document.body.addEventListener("click", function(event) {
                     color: sunglassesNew.frame.color,
                     price: sunglassesNew.frame.price,
                     cssClass: sunglassesNew.frame.cssClass,
-                }     
-            }
-        } 
-        
+                },
+            };
+        }
+
         //frames
         else {
-            var colorOptions = sunglassesOptions.frames
-            .filter(function(item) {
-                return item.color === currColor
-            })[0]
-            
-            var color = colorOptions.color
-            var price = colorOptions.price
-            var cssClass = colorOptions.cssClass
-            
+            var colorOptions = sunglassesOptions.frames.filter(function (item) {
+                return item.color === currColor;
+            })[0];
+
+            var color = colorOptions.color;
+            var price = colorOptions.price;
+            var cssClass = colorOptions.cssClass;
+
             sunglassesNew = {
                 model: {
                     name: sunglassesNew.model.name,
@@ -258,14 +166,14 @@ document.body.addEventListener("click", function(event) {
                     color: color,
                     price: price,
                     cssClass: cssClass,
-                }     
-            }
+                },
+            };
         }
 
-        addHighlight(clickedItem)
-        setSunglasses(sunglassesNew)
-        render(sunglassesNew)
+        addHighlight(clickedItem);
+        setSunglasses(sunglassesNew);
+        render(sunglassesNew);
     }
-})
+});
 
-render(sunglasses)
+render(defaultSunglasses);
